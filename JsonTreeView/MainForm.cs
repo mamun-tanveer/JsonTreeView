@@ -45,5 +45,55 @@ namespace JsonTreeView
 }");
 			JsonTreeView.ExpandAll();
 		}
-	}
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                openFileDialog1.ShowDialog();
+                var reader = new System.IO.StreamReader(openFileDialog1.OpenFile());
+                string json = reader.ReadToEnd();
+                JsonTreeView.Nodes.Clear();
+                JsonTreeView.LoadJsonToTreeView(json);
+                foreach(TreeNode node in JsonTreeView.Nodes)
+                {
+                    node.Expand();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Failed to open", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                JsonTreeView.SelectedNode.Remove();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Failed to delete node", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+                
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                saveFileDialog1.ShowDialog();
+                string outputPath = saveFileDialog1.FileName;
+                TreeNode parentNode = JsonTreeView.TopNode;
+                parentNode.SaveToFile(outputPath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Failed to save", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+           
+        }
+    }
 }

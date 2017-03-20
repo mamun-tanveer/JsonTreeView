@@ -19,8 +19,9 @@ namespace JsonTreeView
 		public static void AddObjectNodes(JObject @object, string name, TreeNodeCollection parent)
 		{
 			var node = new TreeNode(name);
+            node.SetTag("Object");
 			parent.Add(node);
-
+            
 			foreach (var property in @object.Properties())
 			{
 				AddTokenNodes(property.Value, property.Name, node.Nodes);
@@ -30,6 +31,7 @@ namespace JsonTreeView
 		private static void AddArrayNodes(JArray array, string name, TreeNodeCollection parent)
 		{
 			var node = new TreeNode(name);
+            node.SetTag("Array");
 			parent.Add(node);
 
 			for (var i = 0; i < array.Count; i++)
@@ -42,7 +44,9 @@ namespace JsonTreeView
 		{
 			if (token is JValue)
 			{
-				parent.Add(new TreeNode(string.Format("{0}: {1}", name, ((JValue)token).Value)));
+                var node = new TreeNode(string.Format("{0}: {1}", name, ((JValue)token).Value));
+                node.SetTag("Leaf");
+                parent.Add(node);
 			}
 			else if (token is JArray)
 			{
@@ -53,5 +57,7 @@ namespace JsonTreeView
 				AddObjectNodes((JObject)token, name, parent);
 			}
 		}
+
+        
 	}
 }
